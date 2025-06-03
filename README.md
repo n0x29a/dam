@@ -1,3 +1,3 @@
 # Däm
 
-Code editor with better UX (Based on Zed editor)
+Code editor with better UX (Based on Zed editor).
