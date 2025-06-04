@@ -961,7 +961,10 @@ impl DisplaySnapshot {
                 if chunk.is_unnecessary {
                     diagnostic_highlight.fade_out = Some(editor_style.unnecessary_code_fade);
                 }
-                if chunk.underline && editor_style.show_underlines {
+                if chunk.underline
+                    && editor_style.show_underlines
+                    && !(chunk.is_unnecessary && severity > lsp::DiagnosticSeverity::WARNING)
+                {
                     let diagnostic_color = super::diagnostic_style(severity, &editor_style.status);
                     diagnostic_highlight.underline = Some(UnderlineStyle {
                         color: Some(diagnostic_color),
@@ -2512,7 +2515,9 @@ pub mod tests {
             cx.update(|cx| syntax_chunks(DisplayRow(0)..DisplayRow(5), &map, &theme, cx)),
             [
                 ("fn \n".to_string(), None),
-                ("oute\nr".to_string(), Some(Hsla::blue())),
+                ("oute".to_string(), Some(Hsla::blue())),
+                ("\n".to_string(), None),
+                ("r".to_string(), Some(Hsla::blue())),
                 ("() \n{}\n\n".to_string(), None),
             ]
         );
@@ -2535,8 +2540,11 @@ pub mod tests {
             [
                 ("out".to_string(), Some(Hsla::blue())),
                 ("⋯\n".to_string(), None),
-                ("  \nfn ".to_string(), Some(Hsla::red())),
-                ("i\n".to_string(), Some(Hsla::blue()))
+                ("  ".to_string(), Some(Hsla::red())),
+                ("\n".to_string(), None),
+                ("fn ".to_string(), Some(Hsla::red())),
+                ("i".to_string(), Some(Hsla::blue())),
+                ("\n".to_string(), None)
             ]
         );
     }
